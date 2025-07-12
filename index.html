@@ -13,6 +13,9 @@
             --highlight: #FFF9C4;
             --positive: #4CAF50;
             --negative: #F44336;
+            --dark-bg: #1a1a1a;
+            --dark-card: #2d2d2d;
+            --dark-text: #e0e0e0;
         }
         * {
             box-sizing: border-box;
@@ -34,6 +37,10 @@
             -webkit-user-select: none;
             user-select: none;
         }
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--dark-text);
+        }
         .container {
             max-width: 100%;
             height: 100vh;
@@ -41,6 +48,9 @@
             flex-direction: column;
             background: var(--card);
             padding: 0;
+        }
+        .dark-mode .container {
+            background: var(--dark-card);
         }
         .header {
             background: var(--primary);
@@ -50,6 +60,19 @@
             font-weight: 600;
             font-size: 17px;
             position: relative;
+        }
+        .theme-toggle {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
         }
         .input-section {
             padding: 12px;
@@ -66,6 +89,9 @@
             font-weight: 500;
             font-size: 14px;
         }
+        .dark-mode .input-group label {
+            color: var(--dark-text);
+        }
         .custom-input {
             width: 100%;
             padding: 10px 12px;
@@ -75,10 +101,18 @@
             background: #f9f9f9;
             caret-color: transparent;
         }
+        .dark-mode .custom-input {
+            background: #3d3d3d;
+            border-color: #555;
+            color: var(--dark-text);
+        }
         .custom-input:focus {
             outline: none;
             border: 2px solid var(--primary);
             background: var(--highlight);
+        }
+        .dark-mode .custom-input:focus {
+            background: #4d4d4d;
         }
         .btn {
             padding: 12px;
@@ -100,6 +134,10 @@
             border-left: 4px solid var(--primary);
             font-size: 14px;
         }
+        .dark-mode .results {
+            background: #333;
+            color: var(--dark-text);
+        }
         .value-positive {
             color: var(--positive);
             font-weight: bold;
@@ -114,6 +152,15 @@
             padding: 10px;
             background: #f0f0f0;
             border-top: 1px solid #ddd;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        .dark-mode .keyboard {
+            background: #333;
+            border-color: #555;
         }
         .key {
             background: white;
@@ -123,6 +170,15 @@
             font-size: 16px;
             text-align: center;
             cursor: pointer;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dark-mode .key {
+            background: #444;
+            border-color: #666;
+            color: var(--dark-text);
         }
         .key-enter {
             background: var(--primary);
@@ -140,18 +196,29 @@
             padding: 6px;
             text-align: left;
         }
+        .dark-mode th, .dark-mode td {
+            border-color: #555;
+        }
         th {
             background-color: #f2f2f2;
+        }
+        .dark-mode th {
+            background-color: #444;
+            color: var(--dark-text);
+        }
+        .dark-mode td {
+            background-color: #3d3d3d;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <button class="theme-toggle" id="themeToggle">🌙</button>
             TT Value Calculator PRO
         </div>
         
-        <div class="input-section">
+        <div class="input-section" id="inputSection">
             <div class="input-group">
                 <label>Коэффициент П1:</label>
                 <input type="text" class="custom-input" id="odds1" placeholder="1.90" inputmode="none">
@@ -190,7 +257,7 @@
             </div>
         </div>
         
-        <div class="keyboard" id="keyboard">
+        <div class="keyboard" id="keyboard" style="display: none;">
             <div class="key" onclick="pressKey('1')">1</div>
             <div class="key" onclick="pressKey('2')">2</div>
             <div class="key" onclick="pressKey('3')">3</div>
@@ -208,23 +275,41 @@
     </div>
 
     <script>
+        // Инициализация темы
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+
         // Отключаем системную клавиатуру
         document.addEventListener('touchstart', function(e) {
             if (e.target.tagName === 'INPUT' && e.target.getAttribute('inputmode') === 'none') {
                 e.preventDefault();
+                showKeyboard();
+                e.target.focus();
             }
         }, { passive: false });
         
         let activeInput = null;
         const inputs = document.querySelectorAll('.custom-input');
         
+        function showKeyboard() {
+            const keyboard = document.getElementById('keyboard');
+            keyboard.style.display = 'grid';
+            
+            // Прокручиваем к активному полю ввода
+            setTimeout(() => {
+                if (activeInput) {
+                    activeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        }
+        
         inputs.forEach(input => {
             input.addEventListener('focus', function() {
                 activeInput = this;
-                document.getElementById('keyboard').style.display = 'grid';
-                setTimeout(() => {
-                    this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
+                showKeyboard();
             });
         });
         
@@ -254,6 +339,23 @@
                 activeInput = null;
             }
         }
+        
+        // Адаптация высоты под iPad
+        function adjustLayout() {
+            const inputSection = document.getElementById('inputSection');
+            const keyboard = document.getElementById('keyboard');
+            
+            if (window.innerHeight < 700) {
+                inputSection.style.paddingBottom = '200px';
+                keyboard.style.position = 'absolute';
+            } else {
+                inputSection.style.paddingBottom = '0';
+                keyboard.style.position = 'fixed';
+            }
+        }
+        
+        window.addEventListener('resize', adjustLayout);
+        adjustLayout();
         
         function calculate() {
             const odds1 = parseFloat(document.getElementById('odds1').value) || 0;
