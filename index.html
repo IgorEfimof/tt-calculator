@@ -1,65 +1,261 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TT Value Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { background: #4CAF50; color: white; border: none; padding: 10px 15px; cursor: pointer; }
-        .result { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px; }
-        .value-positive { color: green; font-weight: bold; }
-        .value-negative { color: red; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        :root {
+            --primary: #E53935;
+            --secondary: #D32F2F;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --highlight: #FFF9C4;
+            --positive: #4CAF50;
+            --negative: #F44336;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            touch-action: manipulation;
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .container {
+            max-width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--card);
+            padding: 0;
+        }
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 17px;
+            position: relative;
+        }
+        .input-section {
+            padding: 12px;
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .input-group {
+            margin-bottom: 12px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .custom-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            background: #f9f9f9;
+            caret-color: transparent;
+        }
+        .custom-input:focus {
+            outline: none;
+            border: 2px solid var(--primary);
+            background: var(--highlight);
+        }
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .results {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            border-left: 4px solid var(--primary);
+            font-size: 14px;
+        }
+        .value-positive {
+            color: var(--positive);
+            font-weight: bold;
+        }
+        .value-negative {
+            color: var(--negative);
+        }
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-top: 1px solid #ddd;
+        }
+        .key {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .key-enter {
+            background: var(--primary);
+            color: white;
+            grid-column: span 2;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Калькулятор Value-ставок (TT)</h1>
-        
-        <div class="input-group">
-            <label>Коэффициент П1:</label>
-            <input type="number" step="0.01" id="odds1" placeholder="1.90">
+        <div class="header">
+            TT Value Calculator PRO
         </div>
         
-        <div class="input-group">
-            <label>Коэффициент П2:</label>
-            <input type="number" step="0.01" id="odds2" placeholder="1.90">
+        <div class="input-section">
+            <div class="input-group">
+                <label>Коэффициент П1:</label>
+                <input type="text" class="custom-input" id="odds1" placeholder="1.90" inputmode="none">
+            </div>
+            
+            <div class="input-group">
+                <label>Коэффициент П2:</label>
+                <input type="text" class="custom-input" id="odds2" placeholder="1.90" inputmode="none">
+            </div>
+            
+            <h3 style="margin-top: 15px; color: var(--primary);">Тоталы</h3>
+            
+            <div class="input-group">
+                <label>Over 17.5:</label>
+                <input type="text" class="custom-input" id="over17" placeholder="1.85" inputmode="none">
+            </div>
+            
+            <div class="input-group">
+                <label>Under 17.5:</label>
+                <input type="text" class="custom-input" id="under17" placeholder="1.95" inputmode="none">
+            </div>
+            
+            <button class="btn" onclick="calculate()">Рассчитать Value</button>
+            
+            <div class="results" id="result" style="display: none;">
+                <h3 style="margin-bottom: 10px;">Результаты анализа:</h3>
+                <div id="output"></div>
+                <table id="resultsTable">
+                    <tr>
+                        <th>Рынок</th>
+                        <th>Коэф.</th>
+                        <th>Вероятность</th>
+                        <th>Value</th>
+                    </tr>
+                </table>
+            </div>
         </div>
         
-        <h3>Тоталы</h3>
-        <div class="input-group">
-            <label>Over 17.5:</label>
-            <input type="number" step="0.01" id="over17" placeholder="1.85">
-        </div>
-        <div class="input-group">
-            <label>Under 17.5:</label>
-            <input type="number" step="0.01" id="under17" placeholder="1.95">
-        </div>
-        
-        <button onclick="calculate()">Рассчитать Value</button>
-        
-        <div class="result" id="result">
-            <h3>Результаты анализа:</h3>
-            <div id="output"></div>
-            <table id="resultsTable">
-                <tr>
-                    <th>Рынок</th>
-                    <th>Коэф.</th>
-                    <th>Вероятность</th>
-                    <th>Value</th>
-                </tr>
-            </table>
+        <div class="keyboard" id="keyboard">
+            <div class="key" onclick="pressKey('1')">1</div>
+            <div class="key" onclick="pressKey('2')">2</div>
+            <div class="key" onclick="pressKey('3')">3</div>
+            <div class="key" onclick="pressKey('⌫')">⌫</div>
+            <div class="key" onclick="pressKey('4')">4</div>
+            <div class="key" onclick="pressKey('5')">5</div>
+            <div class="key" onclick="pressKey('6')">6</div>
+            <div class="key" onclick="pressKey('.')">.</div>
+            <div class="key" onclick="pressKey('7')">7</div>
+            <div class="key" onclick="pressKey('8')">8</div>
+            <div class="key" onclick="pressKey('9')">9</div>
+            <div class="key" onclick="pressKey('0')">0</div>
+            <div class="key-enter" onclick="hideKeyboard()">Готово</div>
         </div>
     </div>
 
     <script>
+        // Отключаем системную клавиатуру
+        document.addEventListener('touchstart', function(e) {
+            if (e.target.tagName === 'INPUT' && e.target.getAttribute('inputmode') === 'none') {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        let activeInput = null;
+        const inputs = document.querySelectorAll('.custom-input');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                activeInput = this;
+                document.getElementById('keyboard').style.display = 'grid';
+                setTimeout(() => {
+                    this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            });
+        });
+        
+        function pressKey(key) {
+            if (!activeInput) return;
+            
+            if (key === '⌫') {
+                activeInput.value = activeInput.value.slice(0, -1);
+                return;
+            }
+            
+            if (key === '.' && activeInput.value.includes('.')) return;
+            
+            // Особый случай: если первая цифра, добавляем точку после нее
+            if (/^\d$/.test(key) && activeInput.value.length === 0) {
+                activeInput.value = key + '.';
+                return;
+            }
+            
+            activeInput.value += key;
+        }
+        
+        function hideKeyboard() {
+            document.getElementById('keyboard').style.display = 'none';
+            if (activeInput) {
+                activeInput.blur();
+                activeInput = null;
+            }
+        }
+        
         function calculate() {
-            // Получаем значения
             const odds1 = parseFloat(document.getElementById('odds1').value) || 0;
             const odds2 = parseFloat(document.getElementById('odds2').value) || 0;
             const over17 = parseFloat(document.getElementById('over17').value) || 0;
@@ -72,7 +268,7 @@
             const prob1 = (1/odds1) / (1 + margin/100) * 100;
             const prob2 = (1/odds2) / (1 + margin/100) * 100;
             
-            // Анализируем тоталы
+            // Анализируем тоталы (упрощенная модель)
             let total17OverValue = 0;
             let total17UnderValue = 0;
             
@@ -81,33 +277,28 @@
                 const fairOverProb = (1/over17) / (1 + totalMargin/100) * 100;
                 const fairUnderProb = (1/under17) / (1 + totalMargin/100) * 100;
                 
-                // Предположим, что реальная вероятность Over 17.5 - 52%
-                const realOverProb = 52;
-                total17OverValue = realOverProb - fairOverProb;
-                
-                // Предположим, что реальная вероятность Under 17.5 - 48%
-                const realUnderProb = 48;
-                total17UnderValue = realUnderProb - fairUnderProb;
+                // Пример: предполагаем, что реальная вероятность Over 17.5 - 52%
+                total17OverValue = 52 - fairOverProb;
+                total17UnderValue = 48 - fairUnderProb;
             }
             
             // Выводим результаты
             let output = `<p>Маржа букмекера: <b>${margin.toFixed(2)}%</b></p>`;
             output += `<p>Реальные вероятности (без маржи):</p>`;
-            output += `<ul>
+            output += `<ul style="padding-left: 20px; margin: 5px 0;">
                 <li>П1: ${prob1.toFixed(2)}%</li>
                 <li>П2: ${prob2.toFixed(2)}%</li>
             </ul>`;
             
             document.getElementById('output').innerHTML = output;
+            document.getElementById('result').style.display = 'block';
             
             // Обновляем таблицу
             const table = document.getElementById('resultsTable');
-            // Очищаем старые данные (кроме заголовков)
             while (table.rows.length > 1) {
                 table.deleteRow(1);
             }
             
-            // Добавляем строки с результатами
             addRow(table, "П1", odds1, prob1, 0);
             addRow(table, "П2", odds2, prob2, 0);
             
@@ -118,6 +309,11 @@
             if (under17 > 0) {
                 addRow(table, "Under 17.5", under17, (1/under17)*100, total17UnderValue);
             }
+            
+            // Прокручиваем к результатам
+            setTimeout(() => {
+                document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         }
         
         function addRow(table, market, odds, probability, value) {
