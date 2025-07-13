@@ -5,270 +5,104 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         :root {
-            --primary: #E53935;
-            --secondary: #D32F2F;
-            --bg: #f5f7fa;
-            --card: #ffffff;
-            --text: #2c3e50;
-            --highlight: #FFF9C4;
-            --positive: #4CAF50;
-            --negative: #F44336;
-            --dark-bg: #1a1a1a;
-            --dark-card: #2d2d2d;
-            --dark-text: #e0e0e0;
+            --primary: #E53935; --secondary: #D32F2F; --bg: #f5f7fa; --card: #ffffff; --text: #2c3e50;
+            --highlight: #FFF9C4; --positive: #4CAF50; --negative: #F44336; --dark-bg: #1a1a1a;
+            --dark-card: #2d2d2d; --dark-text: #e0e0e0; --best-value: #FFEB3B;
         }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            touch-action: manipulation;
-            -webkit-text-size-adjust: 100%;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; overflow: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
-            font-size: 14px;
+            background: var(--bg); color: var(--text); -webkit-touch-callout: none;
+            -webkit-user-select: none; user-select: none; font-size: 13px;
         }
-        body.dark-mode {
-            background: var(--dark-bg);
-            color: var(--dark-text);
-        }
-        .container {
-            max-width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: var(--card);
-            padding: 0;
-        }
-        .dark-mode .container {
-            background: var(--dark-card);
-        }
+        body.dark-mode { background: var(--dark-bg); color: var(--dark-text); }
+        .container { max-width: 100%; height: 100vh; display: flex; flex-direction: column; background: var(--card); }
+        .dark-mode .container { background: var(--dark-card); }
         .header {
-            background: var(--primary);
-            color: white;
-            padding: 8px 15px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 16px;
-            position: relative;
+            background: var(--primary); color: white; padding: 6px 10px; text-align: center;
+            font-weight: 600; font-size: 15px; position: relative;
         }
-        .theme-toggle, .mode-toggle {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
+        .theme-toggle, .mode-toggle, .clear-btn {
+            position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2);
+            border: none; color: white; padding: 3px 6px; border-radius: 3px; font-size: 11px; cursor: pointer;
         }
-        .theme-toggle { left: 5px; }
-        .mode-toggle { right: 5px; }
-        .input-section {
-            padding: 8px;
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        .input-row {
-            display: flex;
-            margin-bottom: 6px;
-            align-items: center;
-        }
-        .input-group {
-            flex: 1;
-            margin: 0 4px;
-            position: relative;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 3px;
-            font-weight: 500;
-            font-size: 12px;
-        }
-        .dark-mode .input-group label {
-            color: var(--dark-text);
-        }
+        .theme-toggle { left: 5px; } .mode-toggle { right: 5px; } .clear-btn { right: 60px; }
+        .input-section { padding: 6px; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .input-row { display: flex; margin-bottom: 4px; align-items: center; }
+        .input-group { flex: 1; margin: 0 3px; position: relative; }
+        .input-group label { display: block; margin-bottom: 2px; font-weight: 500; font-size: 11px; }
+        .dark-mode .input-group label { color: var(--dark-text); }
         .custom-input {
-            width: 100%;
-            padding: 8px 8px 8px 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 13px;
-            background: #f9f9f9;
-            caret-color: transparent;
-            text-align: right;
+            width: 100%; padding: 6px 6px 6px 16px; border: 1px solid #ddd; border-radius: 3px;
+            font-size: 12px; background: #f9f9f9; caret-color: transparent; text-align: right;
         }
-        .dark-mode .custom-input {
-            background: #3d3d3d;
-            border-color: #555;
-            color: var(--dark-text);
-        }
-        .custom-input:focus {
-            outline: none;
-            border: 2px solid var(--primary);
-            background: var(--highlight);
-        }
-        .dark-mode .custom-input:focus {
-            background: #4d4d4d;
-        }
-        .decimal-point {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-        }
-        .btn {
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            background: var(--primary);
-            color: white;
-            cursor: pointer;
-            width: 100%;
-            margin: 8px 0;
-        }
+        .dark-mode .custom-input { background: #3d3d3d; border-color: #555; color: var(--dark-text); }
+        .custom-input:focus { outline: none; border: 2px solid var(--primary); background: var(--highlight); }
+        .dark-mode .custom-input:focus { background: #4d4d4d; }
+        .decimal-point { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+        .btn-row { display: flex; gap: 5px; margin: 5px 0; }
+        .btn { padding: 8px; border: none; border-radius: 3px; font-size: 12px;
+            font-weight: 500; cursor: pointer; flex: 1; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #e0e0e0; color: #333; }
+        .dark-mode .btn-secondary { background: #555; color: white; }
         .results {
-            background: #f8f9fa;
-            border-radius: 6px;
-            padding: 8px;
-            margin-top: 6px;
-            border-left: 3px solid var(--primary);
-            font-size: 12px;
+            background: #f8f9fa; border-radius: 4px; padding: 6px; margin-top: 4px;
+            border-left: 2px solid var(--primary); font-size: 11px;
         }
-        .dark-mode .results {
-            background: #333;
-            color: var(--dark-text);
-        }
-        .value-positive {
-            color: var(--positive);
-            font-weight: bold;
-        }
-        .value-negative {
-            color: var(--negative);
-        }
+        .dark-mode .results { background: #333; color: var(--dark-text); }
+        .value-positive { color: var(--positive); font-weight: bold; }
+        .value-negative { color: var(--negative); }
         .keyboard {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 4px;
-            padding: 6px;
-            background: #f0f0f0;
-            border-top: 1px solid #ddd;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; padding: 4px;
+            background: #f0f0f0; border-top: 1px solid #ddd; position: fixed;
+            bottom: 0; left: 0; right: 0; z-index: 100;
         }
-        .dark-mode .keyboard {
-            background: #333;
-            border-color: #555;
-        }
+        .dark-mode .keyboard { background: #333; border-color: #555; }
         .key {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 8px;
-            font-size: 14px;
-            text-align: center;
-            cursor: pointer;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: white; border: 1px solid #ddd; border-radius: 3px; padding: 6px;
+            font-size: 13px; text-align: center; cursor: pointer; height: 35px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .dark-mode .key {
-            background: #444;
-            border-color: #666;
-            color: var(--dark-text);
-        }
-        .key-enter {
-            background: var(--primary);
-            color: white;
-            grid-column: span 2;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 6px;
-            font-size: 11px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 4px;
-            text-align: left;
-        }
-        .dark-mode th, .dark-mode td {
-            border-color: #555;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .dark-mode th {
-            background-color: #444;
-            color: var(--dark-text);
-        }
-        .dark-mode td {
-            background-color: #3d3d3d;
-        }
+        .dark-mode .key { background: #444; border-color: #666; color: var(--dark-text); }
+        .key-enter { background: var(--primary); color: white; grid-column: span 2; }
+        table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 10px; }
+        th, td { border: 1px solid #ddd; padding: 3px; text-align: left; }
+        .dark-mode th, .dark-mode td { border-color: #555; }
+        th { background-color: #f2f2f2; }
+        .dark-mode th { background-color: #444; color: var(--dark-text); }
+        .dark-mode td { background-color: #3d3d3d; }
         .section-title {
-            margin: 8px 0 4px;
-            color: var(--primary);
-            padding-bottom: 3px;
-            border-bottom: 1px solid #eee;
-            font-size: 13px;
+            margin: 5px 0 3px; color: var(--primary); padding-bottom: 2px;
+            border-bottom: 1px solid #eee; font-size: 12px;
         }
-        .dark-mode .section-title {
-            border-color: #555;
+        .dark-mode .section-title { border-color: #555; }
+        .change-positive { color: var(--positive); font-weight: bold; }
+        .change-negative { color: var(--negative); font-weight: bold; }
+        .best-value { background-color: var(--best-value); font-weight: bold; }
+        .dark-mode .best-value { background-color: #5d4037; }
+        .comparison-cell { display: flex; justify-content: space-between; }
+        .prematch-value { color: #888; font-size: 9px; }
+        .live-value { font-weight: bold; }
+        .margin-info {
+            background: #e3f2fd; padding: 4px; border-radius: 3px; margin-top: 4px;
+            font-size: 11px; text-align: center;
         }
-        .change-positive {
-            color: var(--positive);
-            font-weight: bold;
-        }
-        .change-negative {
-            color: var(--negative);
-            font-weight: bold;
-        }
-        .best-value {
-            background-color: #FFF9C4;
-        }
-        .dark-mode .best-value {
-            background-color: #5d4037;
-        }
-        .comparison-cell {
-            display: flex;
-            justify-content: space-between;
-        }
-        .prematch-value {
-            color: #888;
-            font-size: 10px;
-        }
-        .live-value {
-            font-weight: bold;
-        }
+        .dark-mode .margin-info { background: #0d47a1; }
+        .value-excellent { background-color: #C8E6C9; }
+        .dark-mode .value-excellent { background-color: #2E7D32; }
+        .value-good { background-color: #DCEDC8; }
+        .dark-mode .value-good { background-color: #689F38; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <button class="theme-toggle" id="themeToggle">🌙</button>
-            TT Value Analyzer PRO
+            TT Value PRO
             <button class="mode-toggle" id="modeToggle">Прематч</button>
+            <button class="clear-btn" id="clearBtn">Очистить</button>
         </div>
         
         <div class="input-section" id="inputSection">
@@ -285,6 +119,8 @@
                         <input type="text" class="custom-input" id="odds2" placeholder="1.90" inputmode="none">
                     </div>
                 </div>
+                
+                <div class="margin-info" id="prematchMargin">Маржа: введите коэффициенты</div>
                 
                 <h3 class="section-title">Тоталы (прематч)</h3>
                 
@@ -330,9 +166,11 @@
             
             <div id="liveSection" style="display: none;">
                 <div class="input-group">
-                    <label>Текущий гейм:</label>
+                    <label>Текущий гейм (1-15):</label>
                     <input type="text" class="custom-input" id="currentGame" placeholder="5" inputmode="none">
                 </div>
+                
+                <div class="margin-info" id="liveMargin">Маржа: введите коэффициенты</div>
                 
                 <h3 class="section-title">Тоталы (лайв)</h3>
                 
@@ -376,7 +214,10 @@
                 </div>
             </div>
             
-            <button class="btn" onclick="calculate()">Анализировать</button>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="calculate()">Анализ</button>
+                <button class="btn btn-secondary" onclick="clearAllFields()">Очистить все</button>
+            </div>
             
             <div class="results" id="result" style="display: none;">
                 <div id="output"></div>
@@ -386,7 +227,7 @@
                         <th>Коэф.</th>
                         <th>Вероятность</th>
                         <th>Value</th>
-                        <th>Динамика</th>
+                        <th>Изменение</th>
                     </tr>
                 </table>
             </div>
@@ -427,12 +268,26 @@
                 prematchSection.style.display = 'block';
                 liveSection.style.display = 'none';
                 modeToggle.textContent = 'Прематч';
+                updateMarginDisplay('prematch');
             } else {
                 prematchSection.style.display = 'none';
                 liveSection.style.display = 'block';
                 modeToggle.textContent = 'Лайв';
+                updateMarginDisplay('live');
             }
         });
+
+        // Очистка всех полей
+        function clearAllFields() {
+            document.querySelectorAll('.custom-input').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('prematchMargin').textContent = 'Маржа: введите коэффициенты';
+            document.getElementById('liveMargin').textContent = 'Маржа: введите коэффициенты';
+        }
+        
+        document.getElementById('clearBtn').addEventListener('click', clearAllFields);
 
         // Отключаем системную клавиатуру
         document.addEventListener('touchstart', function(e) {
@@ -462,6 +317,7 @@
                         activeInput.value = '';
                     }
                 }
+                updateMarginOnChange();
                 return;
             }
             
@@ -484,6 +340,7 @@
                         activeInput.value += '.';
                     }
                 }
+                updateMarginOnChange();
             }
             
             if (key === '.' && !activeInput.value.includes('.')) {
@@ -492,6 +349,7 @@
                 } else {
                     activeInput.value += '.';
                 }
+                updateMarginOnChange();
             }
         }
         
@@ -508,6 +366,33 @@
             }
         }
         
+        function updateMarginOnChange() {
+            if (prematchSection.style.display !== 'none') {
+                updateMarginDisplay('prematch');
+            } else {
+                updateMarginDisplay('live');
+            }
+        }
+        
+        function updateMarginDisplay(type) {
+            let odds1, odds2;
+            
+            if (type === 'prematch') {
+                odds1 = parseFloat(document.getElementById('odds1').value) || 0;
+                odds2 = parseFloat(document.getElementById('odds2').value) || 0;
+            } else {
+                odds1 = parseFloat(document.getElementById('live_over17').value) || 0;
+                odds2 = parseFloat(document.getElementById('live_under17').value) || 0;
+            }
+            
+            if (odds1 > 0 && odds2 > 0) {
+                const margin = (1/odds1 + 1/odds2 - 1) * 100;
+                document.getElementById(`${type}Margin`).textContent = `Маржа: ${margin.toFixed(2)}%`;
+            } else {
+                document.getElementById(`${type}Margin`).textContent = `Маржа: введите коэффициенты`;
+            }
+        }
+        
         inputs.forEach(input => {
             const pointSpan = document.createElement('span');
             pointSpan.className = 'decimal-point';
@@ -517,10 +402,6 @@
             input.addEventListener('focus', function() {
                 activeInput = this;
                 showKeyboard();
-                
-                if (this.value === '') {
-                    this.value = '';
-                }
             });
             
             input.addEventListener('blur', function() {
@@ -532,7 +413,10 @@
                 } else if (value && value.split('.')[1]?.length === 1) {
                     this.value = value + '0';
                 }
+                updateMarginOnChange();
             });
+            
+            input.addEventListener('input', updateMarginOnChange);
         });
         
         function hideKeyboard() {
@@ -564,14 +448,16 @@
             const liveUnder19 = parseFloat(document.getElementById('live_under19').value) || 0;
             
             // Рассчитываем маржу
-            const margin = (1/odds1 + 1/odds2 - 1) * 100;
+            const prematchMargin = (1/odds1 + 1/odds2 - 1) * 100;
+            const liveMargin = (1/liveOver17 + 1/liveUnder17 - 1) * 100;
             
             // Рассчитываем вероятности без маржи
-            const prob1 = (1/odds1) / (1 + margin/100) * 100;
-            const prob2 = (1/odds2) / (1 + margin/100) * 100;
+            const prob1 = (1/odds1) / (1 + prematchMargin/100) * 100;
+            const prob2 = (1/odds2) / (1 + prematchMargin/100) * 100;
             
             // Выводим результаты
-            let output = `<p>Маржа БК: <b>${margin.toFixed(2)}%</b></p>`;
+            let output = `<p><b>Прематч анализ</b></p>`;
+            output += `<p>Маржа БК: <span class="${prematchMargin > 5 ? 'value-negative' : 'value-positive'}">${prematchMargin.toFixed(2)}%</span></p>`;
             output += `<p>Реальные вероятности:</p>`;
             output += `<ul style="padding-left: 20px; margin: 5px 0;">
                 <li>П1: ${prob1.toFixed(2)}%</li>
@@ -579,7 +465,10 @@
             </ul>`;
             
             if (currentGame > 0) {
-                output += `<p style="margin-top: 8px;">Анализ на гейме ${currentGame}</p>`;
+                const marginChange = liveMargin - prematchMargin;
+                output += `<p><b>Лайв анализ (гейм ${currentGame})</b></p>`;
+                output += `<p>Маржа БК: <span class="${liveMargin > 5 ? 'value-negative' : 'value-positive'}">${liveMargin.toFixed(2)}%</span></p>`;
+                output += `<p>Изменение маржи: <span class="${marginChange > 0 ? 'value-negative' : 'value-positive'}">${marginChange > 0 ? '+' : ''}${marginChange.toFixed(2)}%</span></p>`;
             }
             
             document.getElementById('output').innerHTML = output;
@@ -608,6 +497,11 @@
             
             // Подсвечиваем лучшие value
             highlightBestValues(table, bestValues);
+            
+            // Прокручиваем к результатам
+            setTimeout(() => {
+                document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
         }
         
         function addTotalRow(table, market, preOdds, liveOdds, currentGame, values, bestValues) {
@@ -617,7 +511,6 @@
             let liveProb = 0;
             let change = 0;
             let adjustedProb = preProb;
-            let liveValue = 0;
             
             if (liveOdds > 0 && currentGame > 0) {
                 liveProb = (1/liveOdds) * 100;
@@ -625,21 +518,10 @@
                 
                 const liveWeight = Math.min(currentGame / 15, 0.7);
                 adjustedProb = (liveProb * liveWeight) + (preProb * (1 - liveWeight));
-                liveValue = (adjustedProb - preProb).toFixed(2);
             }
             
             const value = adjustedProb - preProb;
-            values.push(value);
-            
-            if (value > 1) {
-                bestValues.push({
-                    value: value,
-                    market: market,
-                    odds: preOdds,
-                    probability: adjustedProb,
-                    change: change
-                });
-            }
+            values.push({value, market, odds: preOdds, probability: adjustedProb, change});
             
             addRow(table, market, preOdds, adjustedProb, value, values, bestValues, change, liveProb);
         }
@@ -647,11 +529,16 @@
         function addRow(table, market, odds, probability, value, values, bestValues, change = null, liveProb = null) {
             const row = table.insertRow();
             
+            // Рынок
             row.insertCell(0).textContent = market;
-            row.insertCell(1).textContent = odds.toFixed(2);
             
+            // Коэффициент
+            const oddsCell = row.insertCell(1);
+            oddsCell.textContent = odds.toFixed(2);
+            
+            // Вероятность (сравнение прематч/лайв)
             const probCell = row.insertCell(2);
-            if (liveProb !== null) {
+            if (liveProb !== null && change !== null) {
                 probCell.innerHTML = `
                     <div class="comparison-cell">
                         <span class="live-value">${probability.toFixed(2)}%</span>
@@ -661,15 +548,11 @@
                 probCell.textContent = probability.toFixed(2) + '%';
             }
             
+            // Value
             const valueCell = row.insertCell(3);
             valueCell.textContent = value.toFixed(2) + '%';
             
-            if (value > 1) {
-                valueCell.className = 'value-positive';
-            } else if (value < -1) {
-                valueCell.className = 'value-negative';
-            }
-            
+            // Динамика
             if (change !== null) {
                 const changeCell = row.insertCell(4);
                 const changeText = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
@@ -681,12 +564,28 @@
                     changeCell.className = 'change-negative';
                 }
             }
+            
+            // Подсветка value
+            if (value > 3) {
+                valueCell.classList.add('value-excellent');
+                row.classList.add('best-value');
+                bestValues.push({value, market});
+            } else if (value > 1) {
+                valueCell.classList.add('value-good');
+                row.classList.add('best-value');
+                bestValues.push({value, market});
+            } else if (value < -1) {
+                valueCell.classList.add('value-negative');
+            }
         }
         
         function highlightBestValues(table, bestValues) {
             if (bestValues.length === 0) return;
             
+            // Сортируем по убыванию value
             bestValues.sort((a, b) => b.value - a.value);
+            
+            // Подсвечиваем топ-3 лучших значения
             const topValues = bestValues.slice(0, 3);
             const topValueThreshold = topValues[topValues.length - 1].value;
             
@@ -695,7 +594,7 @@
                 const cells = rows[i].cells;
                 if (cells.length >= 4) {
                     const value = parseFloat(cells[3].textContent);
-                    if (value >= topValueThreshold) {
+                    if (value >= topValueThreshold && value > 1) {
                         rows[i].classList.add('best-value');
                     }
                 }
@@ -728,6 +627,7 @@
                         document.getElementById(key).value = data[key];
                     }
                 }
+                updateMarginDisplay('prematch');
             }
         });
     </script>
