@@ -85,10 +85,12 @@
         .input-row {
             display: flex;
             margin-bottom: 6px;
+            align-items: center;
         }
         .input-group {
             flex: 1;
             margin: 0 4px;
+            position: relative;
         }
         .input-group label {
             display: block;
@@ -101,12 +103,13 @@
         }
         .custom-input {
             width: 100%;
-            padding: 8px;
+            padding: 8px 8px 8px 20px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 13px;
             background: #f9f9f9;
             caret-color: transparent;
+            text-align: right;
         }
         .dark-mode .custom-input {
             background: #3d3d3d;
@@ -120,6 +123,13 @@
         }
         .dark-mode .custom-input:focus {
             background: #4d4d4d;
+        }
+        .decimal-point {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
         }
         .btn {
             padding: 10px;
@@ -257,7 +267,7 @@
     <div class="container">
         <div class="header">
             <button class="theme-toggle" id="themeToggle">🌙</button>
-            TT Value Analyzer
+            TT Value Analyzer PRO
             <button class="mode-toggle" id="modeToggle">Прематч</button>
         </div>
         
@@ -266,23 +276,27 @@
                 <div class="input-row">
                     <div class="input-group">
                         <label>П1:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="odds1" placeholder="1.90" inputmode="none">
                     </div>
                     <div class="input-group">
                         <label>П2:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="odds2" placeholder="1.90" inputmode="none">
                     </div>
                 </div>
                 
-                <h3 class="section-title">Тоталы</h3>
+                <h3 class="section-title">Тоталы (прематч)</h3>
                 
                 <div class="input-row">
                     <div class="input-group">
                         <label>Over 17.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="over17" placeholder="1.85" inputmode="none">
                     </div>
                     <div class="input-group">
                         <label>Under 17.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="under17" placeholder="1.95" inputmode="none">
                     </div>
                 </div>
@@ -290,10 +304,12 @@
                 <div class="input-row">
                     <div class="input-group">
                         <label>Over 18.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="over18" placeholder="1.85" inputmode="none">
                     </div>
                     <div class="input-group">
                         <label>Under 18.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="under18" placeholder="1.95" inputmode="none">
                     </div>
                 </div>
@@ -301,10 +317,12 @@
                 <div class="input-row">
                     <div class="input-group">
                         <label>Over 19.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="over19" placeholder="1.85" inputmode="none">
                     </div>
                     <div class="input-group">
                         <label>Under 19.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="under19" placeholder="1.95" inputmode="none">
                     </div>
                 </div>
@@ -316,15 +334,17 @@
                     <input type="text" class="custom-input" id="currentGame" placeholder="5" inputmode="none">
                 </div>
                 
-                <h3 class="section-title">Лайв тоталы</h3>
+                <h3 class="section-title">Тоталы (лайв)</h3>
                 
                 <div class="input-row">
                     <div class="input-group">
                         <label>Over 17.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="live_over17" placeholder="1.85" inputmode="none">
                     </div>
                     <div class="input-group">
                         <label>Under 17.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="live_under17" placeholder="1.95" inputmode="none">
                     </div>
                 </div>
@@ -332,10 +352,12 @@
                 <div class="input-row">
                     <div class="input-group">
                         <label>Over 18.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="live_over18" placeholder="1.85" inputmode="none">
                     </div>
                     <div class="input-group">
                         <label>Under 18.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="live_under18" placeholder="1.95" inputmode="none">
                     </div>
                 </div>
@@ -343,10 +365,12 @@
                 <div class="input-row">
                     <div class="input-group">
                         <label>Over 19.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="live_over19" placeholder="1.85" inputmode="none">
                     </div>
                     <div class="input-group">
                         <label>Under 19.5:</label>
+                        <span class="decimal-point">.</span>
                         <input type="text" class="custom-input" id="live_under19" placeholder="1.95" inputmode="none">
                     </div>
                 </div>
@@ -427,30 +451,89 @@
             keyboard.style.display = 'grid';
         }
         
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                activeInput = this;
-                showKeyboard();
-            });
-        });
-        
         function pressKey(key) {
             if (!activeInput) return;
             
             if (key === '⌫') {
-                activeInput.value = activeInput.value.slice(0, -1);
+                const currentValue = activeInput.value;
+                if (currentValue.length > 0) {
+                    activeInput.value = currentValue.slice(0, -1);
+                    if (activeInput.value === '.') {
+                        activeInput.value = '';
+                    }
+                }
                 return;
             }
             
-            if (key === '.' && activeInput.value.includes('.')) return;
-            
-            if (/^\d$/.test(key) && activeInput.value.length === 0) {
-                activeInput.value = key + '.';
-                return;
+            if (/^\d$/.test(key)) {
+                const currentValue = activeInput.value;
+                
+                if (currentValue === '') {
+                    activeInput.value = key + '.';
+                } 
+                else if (currentValue.includes('.') && currentValue.split('.')[1].length < 2) {
+                    activeInput.value += key;
+                    
+                    if (currentValue.split('.')[1].length === 1) {
+                        moveToNextField();
+                    }
+                }
+                else if (!currentValue.includes('.') && currentValue.length < 3) {
+                    activeInput.value += key;
+                    if (currentValue.length === 1) {
+                        activeInput.value += '.';
+                    }
+                }
             }
             
-            activeInput.value += key;
+            if (key === '.' && !activeInput.value.includes('.')) {
+                if (activeInput.value === '') {
+                    activeInput.value = '0.';
+                } else {
+                    activeInput.value += '.';
+                }
+            }
         }
+        
+        function moveToNextField() {
+            const allInputs = Array.from(document.querySelectorAll('.custom-input'));
+            const currentIndex = allInputs.indexOf(activeInput);
+            
+            if (currentIndex < allInputs.length - 1) {
+                setTimeout(() => {
+                    allInputs[currentIndex + 1].focus();
+                }, 50);
+            } else {
+                hideKeyboard();
+            }
+        }
+        
+        inputs.forEach(input => {
+            const pointSpan = document.createElement('span');
+            pointSpan.className = 'decimal-point';
+            pointSpan.textContent = '.';
+            input.parentNode.insertBefore(pointSpan, input);
+            
+            input.addEventListener('focus', function() {
+                activeInput = this;
+                showKeyboard();
+                
+                if (this.value === '') {
+                    this.value = '';
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                const value = this.value;
+                if (value && !value.includes('.')) {
+                    this.value = value + '.00';
+                } else if (value && value.endsWith('.')) {
+                    this.value = value + '00';
+                } else if (value && value.split('.')[1]?.length === 1) {
+                    this.value = value + '0';
+                }
+            });
+        });
         
         function hideKeyboard() {
             document.getElementById('keyboard').style.display = 'none';
@@ -540,7 +623,6 @@
                 liveProb = (1/liveOdds) * 100;
                 change = liveProb - preProb;
                 
-                // Вес лайв данных зависит от текущего гейма (0.1-0.7)
                 const liveWeight = Math.min(currentGame / 15, 0.7);
                 adjustedProb = (liveProb * liveWeight) + (preProb * (1 - liveWeight));
                 liveValue = (adjustedProb - preProb).toFixed(2);
@@ -549,8 +631,7 @@
             const value = adjustedProb - preProb;
             values.push(value);
             
-            // Сохраняем данные для лучших значений
-            if (value > 1) { // Порог value для "лучших" вариантов
+            if (value > 1) {
                 bestValues.push({
                     value: value,
                     market: market,
@@ -566,13 +647,9 @@
         function addRow(table, market, odds, probability, value, values, bestValues, change = null, liveProb = null) {
             const row = table.insertRow();
             
-            // Рынок
             row.insertCell(0).textContent = market;
-            
-            // Коэффициент
             row.insertCell(1).textContent = odds.toFixed(2);
             
-            // Вероятность (с сравнением прематч/лайв)
             const probCell = row.insertCell(2);
             if (liveProb !== null) {
                 probCell.innerHTML = `
@@ -584,7 +661,6 @@
                 probCell.textContent = probability.toFixed(2) + '%';
             }
             
-            // Value
             const valueCell = row.insertCell(3);
             valueCell.textContent = value.toFixed(2) + '%';
             
@@ -594,7 +670,6 @@
                 valueCell.className = 'value-negative';
             }
             
-            // Динамика
             if (change !== null) {
                 const changeCell = row.insertCell(4);
                 const changeText = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
@@ -611,14 +686,10 @@
         function highlightBestValues(table, bestValues) {
             if (bestValues.length === 0) return;
             
-            // Сортируем по value (по убыванию)
             bestValues.sort((a, b) => b.value - a.value);
-            
-            // Берем топ-3 лучших значения
             const topValues = bestValues.slice(0, 3);
             const topValueThreshold = topValues[topValues.length - 1].value;
             
-            // Подсвечиваем все строки с value >= порогового значения
             const rows = table.rows;
             for (let i = 1; i < rows.length; i++) {
                 const cells = rows[i].cells;
