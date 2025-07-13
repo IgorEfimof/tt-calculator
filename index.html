@@ -36,6 +36,7 @@
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
+            font-size: 14px;
         }
         body.dark-mode {
             background: var(--dark-bg);
@@ -55,49 +56,55 @@
         .header {
             background: var(--primary);
             color: white;
-            padding: 12px 15px;
+            padding: 8px 15px;
             text-align: center;
             font-weight: 600;
-            font-size: 17px;
+            font-size: 16px;
             position: relative;
         }
-        .theme-toggle {
+        .theme-toggle, .mode-toggle {
             position: absolute;
-            left: 10px;
             top: 50%;
             transform: translateY(-50%);
             background: rgba(255,255,255,0.2);
             border: none;
             color: white;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 4px;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
         }
+        .theme-toggle { left: 5px; }
+        .mode-toggle { right: 5px; }
         .input-section {
-            padding: 12px;
+            padding: 8px;
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
+        .input-row {
+            display: flex;
+            margin-bottom: 6px;
+        }
         .input-group {
-            margin-bottom: 12px;
+            flex: 1;
+            margin: 0 4px;
         }
         .input-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 12px;
         }
         .dark-mode .input-group label {
             color: var(--dark-text);
         }
         .custom-input {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px;
             border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 15px;
+            border-radius: 4px;
+            font-size: 13px;
             background: #f9f9f9;
             caret-color: transparent;
         }
@@ -115,24 +122,24 @@
             background: #4d4d4d;
         }
         .btn {
-            padding: 12px;
+            padding: 10px;
             border: none;
-            border-radius: 6px;
-            font-size: 15px;
+            border-radius: 4px;
+            font-size: 14px;
             font-weight: 500;
             background: var(--primary);
             color: white;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
+            margin: 8px 0;
         }
         .results {
             background: #f8f9fa;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 10px;
-            border-left: 4px solid var(--primary);
-            font-size: 14px;
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 6px;
+            border-left: 3px solid var(--primary);
+            font-size: 12px;
         }
         .dark-mode .results {
             background: #333;
@@ -148,8 +155,8 @@
         .keyboard {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            padding: 10px;
+            gap: 4px;
+            padding: 6px;
             background: #f0f0f0;
             border-top: 1px solid #ddd;
             position: fixed;
@@ -165,12 +172,12 @@
         .key {
             background: white;
             border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 12px;
-            font-size: 16px;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 14px;
             text-align: center;
             cursor: pointer;
-            height: 50px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -188,12 +195,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 13px;
+            margin-top: 6px;
+            font-size: 11px;
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 6px;
+            padding: 4px;
             text-align: left;
         }
         .dark-mode th, .dark-mode td {
@@ -209,42 +216,145 @@
         .dark-mode td {
             background-color: #3d3d3d;
         }
+        .section-title {
+            margin: 8px 0 4px;
+            color: var(--primary);
+            padding-bottom: 3px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        .dark-mode .section-title {
+            border-color: #555;
+        }
+        .change-positive {
+            color: var(--positive);
+            font-weight: bold;
+        }
+        .change-negative {
+            color: var(--negative);
+            font-weight: bold;
+        }
+        .best-value {
+            background-color: #FFF9C4;
+        }
+        .dark-mode .best-value {
+            background-color: #5d4037;
+        }
+        .comparison-cell {
+            display: flex;
+            justify-content: space-between;
+        }
+        .prematch-value {
+            color: #888;
+            font-size: 10px;
+        }
+        .live-value {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <button class="theme-toggle" id="themeToggle">🌙</button>
-            TT Value Calculator PRO
+            TT Value Analyzer
+            <button class="mode-toggle" id="modeToggle">Прематч</button>
         </div>
         
         <div class="input-section" id="inputSection">
-            <div class="input-group">
-                <label>Коэффициент П1:</label>
-                <input type="text" class="custom-input" id="odds1" placeholder="1.90" inputmode="none">
+            <div id="prematchSection">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>П1:</label>
+                        <input type="text" class="custom-input" id="odds1" placeholder="1.90" inputmode="none">
+                    </div>
+                    <div class="input-group">
+                        <label>П2:</label>
+                        <input type="text" class="custom-input" id="odds2" placeholder="1.90" inputmode="none">
+                    </div>
+                </div>
+                
+                <h3 class="section-title">Тоталы</h3>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Over 17.5:</label>
+                        <input type="text" class="custom-input" id="over17" placeholder="1.85" inputmode="none">
+                    </div>
+                    <div class="input-group">
+                        <label>Under 17.5:</label>
+                        <input type="text" class="custom-input" id="under17" placeholder="1.95" inputmode="none">
+                    </div>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Over 18.5:</label>
+                        <input type="text" class="custom-input" id="over18" placeholder="1.85" inputmode="none">
+                    </div>
+                    <div class="input-group">
+                        <label>Under 18.5:</label>
+                        <input type="text" class="custom-input" id="under18" placeholder="1.95" inputmode="none">
+                    </div>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Over 19.5:</label>
+                        <input type="text" class="custom-input" id="over19" placeholder="1.85" inputmode="none">
+                    </div>
+                    <div class="input-group">
+                        <label>Under 19.5:</label>
+                        <input type="text" class="custom-input" id="under19" placeholder="1.95" inputmode="none">
+                    </div>
+                </div>
             </div>
             
-            <div class="input-group">
-                <label>Коэффициент П2:</label>
-                <input type="text" class="custom-input" id="odds2" placeholder="1.90" inputmode="none">
+            <div id="liveSection" style="display: none;">
+                <div class="input-group">
+                    <label>Текущий гейм:</label>
+                    <input type="text" class="custom-input" id="currentGame" placeholder="5" inputmode="none">
+                </div>
+                
+                <h3 class="section-title">Лайв тоталы</h3>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Over 17.5:</label>
+                        <input type="text" class="custom-input" id="live_over17" placeholder="1.85" inputmode="none">
+                    </div>
+                    <div class="input-group">
+                        <label>Under 17.5:</label>
+                        <input type="text" class="custom-input" id="live_under17" placeholder="1.95" inputmode="none">
+                    </div>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Over 18.5:</label>
+                        <input type="text" class="custom-input" id="live_over18" placeholder="1.85" inputmode="none">
+                    </div>
+                    <div class="input-group">
+                        <label>Under 18.5:</label>
+                        <input type="text" class="custom-input" id="live_under18" placeholder="1.95" inputmode="none">
+                    </div>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Over 19.5:</label>
+                        <input type="text" class="custom-input" id="live_over19" placeholder="1.85" inputmode="none">
+                    </div>
+                    <div class="input-group">
+                        <label>Under 19.5:</label>
+                        <input type="text" class="custom-input" id="live_under19" placeholder="1.95" inputmode="none">
+                    </div>
+                </div>
             </div>
             
-            <h3 style="margin-top: 15px; color: var(--primary);">Тоталы</h3>
-            
-            <div class="input-group">
-                <label>Over 17.5:</label>
-                <input type="text" class="custom-input" id="over17" placeholder="1.85" inputmode="none">
-            </div>
-            
-            <div class="input-group">
-                <label>Under 17.5:</label>
-                <input type="text" class="custom-input" id="under17" placeholder="1.95" inputmode="none">
-            </div>
-            
-            <button class="btn" onclick="calculate()">Рассчитать Value</button>
+            <button class="btn" onclick="calculate()">Анализировать</button>
             
             <div class="results" id="result" style="display: none;">
-                <h3 style="margin-bottom: 10px;">Результаты анализа:</h3>
                 <div id="output"></div>
                 <table id="resultsTable">
                     <tr>
@@ -252,6 +362,7 @@
                         <th>Коэф.</th>
                         <th>Вероятность</th>
                         <th>Value</th>
+                        <th>Динамика</th>
                     </tr>
                 </table>
             </div>
@@ -282,6 +393,23 @@
             themeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
         });
 
+        // Переключение между прематч и лайв режимами
+        const modeToggle = document.getElementById('modeToggle');
+        const prematchSection = document.getElementById('prematchSection');
+        const liveSection = document.getElementById('liveSection');
+        
+        modeToggle.addEventListener('click', () => {
+            if (prematchSection.style.display === 'none') {
+                prematchSection.style.display = 'block';
+                liveSection.style.display = 'none';
+                modeToggle.textContent = 'Прематч';
+            } else {
+                prematchSection.style.display = 'none';
+                liveSection.style.display = 'block';
+                modeToggle.textContent = 'Лайв';
+            }
+        });
+
         // Отключаем системную клавиатуру
         document.addEventListener('touchstart', function(e) {
             if (e.target.tagName === 'INPUT' && e.target.getAttribute('inputmode') === 'none') {
@@ -297,13 +425,6 @@
         function showKeyboard() {
             const keyboard = document.getElementById('keyboard');
             keyboard.style.display = 'grid';
-            
-            // Прокручиваем к активному полю ввода
-            setTimeout(() => {
-                if (activeInput) {
-                    activeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 100);
         }
         
         inputs.forEach(input => {
@@ -323,7 +444,6 @@
             
             if (key === '.' && activeInput.value.includes('.')) return;
             
-            // Особый случай: если первая цифра, добавляем точку после нее
             if (/^\d$/.test(key) && activeInput.value.length === 0) {
                 activeInput.value = key + '.';
                 return;
@@ -340,28 +460,25 @@
             }
         }
         
-        // Адаптация высоты под iPad
-        function adjustLayout() {
-            const inputSection = document.getElementById('inputSection');
-            const keyboard = document.getElementById('keyboard');
-            
-            if (window.innerHeight < 700) {
-                inputSection.style.paddingBottom = '200px';
-                keyboard.style.position = 'absolute';
-            } else {
-                inputSection.style.paddingBottom = '0';
-                keyboard.style.position = 'fixed';
-            }
-        }
-        
-        window.addEventListener('resize', adjustLayout);
-        adjustLayout();
-        
         function calculate() {
+            // Получаем прематчевые данные
             const odds1 = parseFloat(document.getElementById('odds1').value) || 0;
             const odds2 = parseFloat(document.getElementById('odds2').value) || 0;
             const over17 = parseFloat(document.getElementById('over17').value) || 0;
             const under17 = parseFloat(document.getElementById('under17').value) || 0;
+            const over18 = parseFloat(document.getElementById('over18').value) || 0;
+            const under18 = parseFloat(document.getElementById('under18').value) || 0;
+            const over19 = parseFloat(document.getElementById('over19').value) || 0;
+            const under19 = parseFloat(document.getElementById('under19').value) || 0;
+            
+            // Получаем лайв данные
+            const currentGame = parseInt(document.getElementById('currentGame').value) || 0;
+            const liveOver17 = parseFloat(document.getElementById('live_over17').value) || 0;
+            const liveUnder17 = parseFloat(document.getElementById('live_under17').value) || 0;
+            const liveOver18 = parseFloat(document.getElementById('live_over18').value) || 0;
+            const liveUnder18 = parseFloat(document.getElementById('live_under18').value) || 0;
+            const liveOver19 = parseFloat(document.getElementById('live_over19').value) || 0;
+            const liveUnder19 = parseFloat(document.getElementById('live_under19').value) || 0;
             
             // Рассчитываем маржу
             const margin = (1/odds1 + 1/odds2 - 1) * 100;
@@ -370,27 +487,17 @@
             const prob1 = (1/odds1) / (1 + margin/100) * 100;
             const prob2 = (1/odds2) / (1 + margin/100) * 100;
             
-            // Анализируем тоталы (упрощенная модель)
-            let total17OverValue = 0;
-            let total17UnderValue = 0;
-            
-            if (over17 > 0 && under17 > 0) {
-                const totalMargin = (1/over17 + 1/under17 - 1) * 100;
-                const fairOverProb = (1/over17) / (1 + totalMargin/100) * 100;
-                const fairUnderProb = (1/under17) / (1 + totalMargin/100) * 100;
-                
-                // Пример: предполагаем, что реальная вероятность Over 17.5 - 52%
-                total17OverValue = 52 - fairOverProb;
-                total17UnderValue = 48 - fairUnderProb;
-            }
-            
             // Выводим результаты
-            let output = `<p>Маржа букмекера: <b>${margin.toFixed(2)}%</b></p>`;
-            output += `<p>Реальные вероятности (без маржи):</p>`;
+            let output = `<p>Маржа БК: <b>${margin.toFixed(2)}%</b></p>`;
+            output += `<p>Реальные вероятности:</p>`;
             output += `<ul style="padding-left: 20px; margin: 5px 0;">
                 <li>П1: ${prob1.toFixed(2)}%</li>
                 <li>П2: ${prob2.toFixed(2)}%</li>
             </ul>`;
+            
+            if (currentGame > 0) {
+                output += `<p style="margin-top: 8px;">Анализ на гейме ${currentGame}</p>`;
+            }
             
             document.getElementById('output').innerHTML = output;
             document.getElementById('result').style.display = 'block';
@@ -401,38 +508,157 @@
                 table.deleteRow(1);
             }
             
-            addRow(table, "П1", odds1, prob1, 0);
-            addRow(table, "П2", odds2, prob2, 0);
+            const values = [];
+            const bestValues = [];
             
-            if (over17 > 0) {
-                addRow(table, "Over 17.5", over17, (1/over17)*100, total17OverValue);
-            }
+            // Добавляем исходы
+            addRow(table, "П1", odds1, prob1, 0, values, bestValues);
+            addRow(table, "П2", odds2, prob2, 0, values, bestValues);
             
-            if (under17 > 0) {
-                addRow(table, "Under 17.5", under17, (1/under17)*100, total17UnderValue);
-            }
+            // Добавляем тоталы в таблицу
+            addTotalRow(table, "Over 17.5", over17, liveOver17, currentGame, values, bestValues);
+            addTotalRow(table, "Under 17.5", under17, liveUnder17, currentGame, values, bestValues);
+            addTotalRow(table, "Over 18.5", over18, liveOver18, currentGame, values, bestValues);
+            addTotalRow(table, "Under 18.5", under18, liveUnder18, currentGame, values, bestValues);
+            addTotalRow(table, "Over 19.5", over19, liveOver19, currentGame, values, bestValues);
+            addTotalRow(table, "Under 19.5", under19, liveUnder19, currentGame, values, bestValues);
             
-            // Прокручиваем к результатам
-            setTimeout(() => {
-                document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+            // Подсвечиваем лучшие value
+            highlightBestValues(table, bestValues);
         }
         
-        function addRow(table, market, odds, probability, value) {
-            const row = table.insertRow();
-            row.insertCell(0).textContent = market;
-            row.insertCell(1).textContent = odds.toFixed(2);
-            row.insertCell(2).textContent = probability.toFixed(2) + '%';
+        function addTotalRow(table, market, preOdds, liveOdds, currentGame, values, bestValues) {
+            if (preOdds <= 0) return;
             
+            const preProb = (1/preOdds) * 100;
+            let liveProb = 0;
+            let change = 0;
+            let adjustedProb = preProb;
+            let liveValue = 0;
+            
+            if (liveOdds > 0 && currentGame > 0) {
+                liveProb = (1/liveOdds) * 100;
+                change = liveProb - preProb;
+                
+                // Вес лайв данных зависит от текущего гейма (0.1-0.7)
+                const liveWeight = Math.min(currentGame / 15, 0.7);
+                adjustedProb = (liveProb * liveWeight) + (preProb * (1 - liveWeight));
+                liveValue = (adjustedProb - preProb).toFixed(2);
+            }
+            
+            const value = adjustedProb - preProb;
+            values.push(value);
+            
+            // Сохраняем данные для лучших значений
+            if (value > 1) { // Порог value для "лучших" вариантов
+                bestValues.push({
+                    value: value,
+                    market: market,
+                    odds: preOdds,
+                    probability: adjustedProb,
+                    change: change
+                });
+            }
+            
+            addRow(table, market, preOdds, adjustedProb, value, values, bestValues, change, liveProb);
+        }
+        
+        function addRow(table, market, odds, probability, value, values, bestValues, change = null, liveProb = null) {
+            const row = table.insertRow();
+            
+            // Рынок
+            row.insertCell(0).textContent = market;
+            
+            // Коэффициент
+            row.insertCell(1).textContent = odds.toFixed(2);
+            
+            // Вероятность (с сравнением прематч/лайв)
+            const probCell = row.insertCell(2);
+            if (liveProb !== null) {
+                probCell.innerHTML = `
+                    <div class="comparison-cell">
+                        <span class="live-value">${probability.toFixed(2)}%</span>
+                        <span class="prematch-value">${(probability - change).toFixed(2)}%</span>
+                    </div>`;
+            } else {
+                probCell.textContent = probability.toFixed(2) + '%';
+            }
+            
+            // Value
             const valueCell = row.insertCell(3);
             valueCell.textContent = value.toFixed(2) + '%';
             
-            if (value > 0) {
+            if (value > 1) {
                 valueCell.className = 'value-positive';
-            } else if (value < 0) {
+            } else if (value < -1) {
                 valueCell.className = 'value-negative';
             }
+            
+            // Динамика
+            if (change !== null) {
+                const changeCell = row.insertCell(4);
+                const changeText = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
+                changeCell.textContent = changeText;
+                
+                if (change > 1) {
+                    changeCell.className = 'change-positive';
+                } else if (change < -1) {
+                    changeCell.className = 'change-negative';
+                }
+            }
         }
+        
+        function highlightBestValues(table, bestValues) {
+            if (bestValues.length === 0) return;
+            
+            // Сортируем по value (по убыванию)
+            bestValues.sort((a, b) => b.value - a.value);
+            
+            // Берем топ-3 лучших значения
+            const topValues = bestValues.slice(0, 3);
+            const topValueThreshold = topValues[topValues.length - 1].value;
+            
+            // Подсвечиваем все строки с value >= порогового значения
+            const rows = table.rows;
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].cells;
+                if (cells.length >= 4) {
+                    const value = parseFloat(cells[3].textContent);
+                    if (value >= topValueThreshold) {
+                        rows[i].classList.add('best-value');
+                    }
+                }
+            }
+        }
+        
+        // Сохраняем прематчевые данные при переключении в лайв режим
+        modeToggle.addEventListener('click', function() {
+            if (prematchSection.style.display === 'none') {
+                localStorage.setItem('prematchData', JSON.stringify({
+                    odds1: document.getElementById('odds1').value,
+                    odds2: document.getElementById('odds2').value,
+                    over17: document.getElementById('over17').value,
+                    under17: document.getElementById('under17').value,
+                    over18: document.getElementById('over18').value,
+                    under18: document.getElementById('under18').value,
+                    over19: document.getElementById('over19').value,
+                    under19: document.getElementById('under19').value
+                }));
+            }
+        });
+        
+        // Загружаем сохраненные данные при загрузке страницы
+        window.addEventListener('load', function() {
+            const savedData = localStorage.getItem('prematchData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                for (const key in data) {
+                    if (document.getElementById(key)) {
+                        document.getElementById(key).value = data[key];
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
